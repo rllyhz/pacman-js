@@ -1,6 +1,6 @@
 # Packman JS
 
-Web-based Packman Game Using Javascript
+Web-based Pacman Game Using Javascript
 
 ## Preview
 
