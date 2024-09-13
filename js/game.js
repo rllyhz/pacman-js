@@ -14,7 +14,7 @@ const DIRECTION_LEFT = 2;
 const DIRECTION_BOTTOM = 1;
 
 const PAUSE_KEY = 32;
-const LIVES_MAX = 1;
+const LIVES_MAX = 3;
 
 let currentLives = LIVES_MAX;
 let ghostCount = 4;
@@ -102,6 +102,8 @@ let gameLoop = () => {
     if (gameFirstPlay) {
         gamePaused = true;
         gameFirstPlay = false;
+
+        showAlert(`Welcome to Pacman Game👋! \n\nHow To Play?\nPress 🔼▶🔽◀ to controll the Pacman. \n\nPress Space button to play/pause .`);
     }
 };
 
@@ -337,7 +339,7 @@ window.addEventListener("keydown", (event) => {
             if (gamePaused) return;
             // bottom arrow or s
             pacman.nextDirection = DIRECTION_BOTTOM;
-        } else if (k == PAUSE_KEY) {
+        } else if (k == PAUSE_KEY && !isDialogShowing()) {
             gamePaused = !gamePaused;
         }
     }, 1);

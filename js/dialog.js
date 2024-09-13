@@ -1,7 +1,8 @@
 
-const ACTIVE_DIALOG_ID = 1234;
+const ACTIVE_DIALOG_ID = "dialog";
+let _isDialogActive = false;
 
-function createDialog() {
+function _createDialog() {
     const dialogElem = document.createElement("dialog");
     dialogElem.id = ACTIVE_DIALOG_ID;
     dialogElem.title = "Dialog";
@@ -30,13 +31,38 @@ function createDialog() {
     return dialogElem;
 }
 
-function showDialog() {
-    const bodyElem = document.querySelector("body");
-    bodyElem.appendChild(createDialog());
+async function showDialog() {
+    const promise = new Promise((_, __) => {
+        const bodyElem = document.querySelector("body");
+        bodyElem.appendChild(_createDialog());
+        isDialogActive = true;
+        _();
+    });
+    
+    return promise;
 }
 
-function deleteActiveDialog() {
-    document.querySelector("body").removeChild(
-        document.querySelector(`#${ACTIVE_DIALOG_ID}`)
-    );
+async function closeActiveDialog() {
+    const promise = new Promise((_, __) => {
+        document.querySelector("body").removeChild(
+            document.querySelector(`#${ACTIVE_DIALOG_ID}`)
+        );
+        isDialogActive = false;
+        _();
+    });
+    
+    return promise;
+}
+
+function isDialogShowing() {
+    return _isDialogActive;
+}
+
+async function showAlert(message) {
+    const promise = new Promise((_, __) => {
+        alert(message);
+        _();
+    });
+    
+    return promise;
 }
