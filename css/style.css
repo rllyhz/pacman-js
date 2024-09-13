@@ -1,11 +1,13 @@
 .option-container {
+    --bg-container: rgba(255, 255, 255, 0.215);
+
     position: absolute;
     top: 0;
     right: 0;
     width: 200px;
     padding: .5rem;
     margin: .5rem;
-    background-color: rgba(255, 255, 255, 0.215);
+    background-color: var(--bg-container);
     border-radius: 4px;
     display: none;
 }
@@ -38,4 +40,42 @@ button {
 }
 .option-container div > *:first-child {
     margin-right: .45rem;
+}
+
+.option-container div.themes {
+    flex-direction: column;
+}
+.option-container div.themes > .theme-btn {
+    background-color: var(--bg-container);
+    border: none;
+    width: 1rem;
+    padding: 1rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transform: scaleX(.85);
+    transition: all ease-in-out 150ms;
+}
+.option-container div.themes > .theme-btn:hover,
+.option-container div.themes > .theme-btn.active {
+    transform: scaleX(1);
+}
+.option-container div.themes > .theme-btn:not(:last-child) {
+    margin-bottom: .35rem;
+}
+
+/* Themes */
+.option-container div.themes > .theme-btn[theme-key="0"] {
+    background: linear-gradient(to right, #373A40 50%, #EEEEEE 50%); 
+}
+.option-container div.themes > .theme-btn[theme-key="1"] {
+    background: linear-gradient(to right,#134B70 50%, rgb(236, 144, 238) 50%); 
+}
+.option-container div.themes > .theme-btn[theme-key="2"] {
+    background: linear-gradient(to right, #55679C 50%, #C0C78C 50%); 
+}
+.option-container div.themes > .theme-btn[theme-key="3"] {
+    background: linear-gradient(to right, #604CC3 50%, #F5F5F5 50%); 
+}
+.option-container div.themes > .theme-btn[theme-key="4"] {
+    background: linear-gradient(to right, #C96868 50%, #FFF4EA 50%); 
 }

@@ -43,6 +43,11 @@ let gameFirstPlay = true;
 let gamePaused = false;
 let dialogShown = false;
 
+let shouldShowGhostRadius = true;
+let ghostRadiusStrokeColor = "rgba(255, 255, 255, 0.28)";
+let wallColor = "#697565";
+let foodColor = "#ECDFCC";
+
 // we now create the map of the walls,
 // if 1 wall, if 0 not wall
 // 21 columns // 23 rows
@@ -191,7 +196,7 @@ let drawFoods = () => {
                     i * oneBlockSize + oneBlockSize / 3,
                     oneBlockSize / 3,
                     oneBlockSize / 3,
-                    "#FEB897"
+                    foodColor,
                 );
             }
         }
@@ -283,7 +288,7 @@ let draw = () => {
     createRect(0, 0, canvas.width, canvas.height, "black");
     drawWalls();
     drawFoods();
-    drawGhosts();
+    drawGhosts(shouldShowGhostRadius, ghostRadiusStrokeColor);
     pacman.draw();
     drawScore();
     drawLatestScore();
@@ -300,7 +305,7 @@ let drawWalls = () => {
                     i * oneBlockSize,
                     oneBlockSize,
                     oneBlockSize,
-                    "#342DCA"
+                    wallColor,
                 );
                 if (j > 0 && map[i][j - 1] == 1) {
                     createRect(
