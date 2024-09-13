@@ -105,7 +105,7 @@ let gameLoop = () => {
         gamePaused = true;
         gameFirstPlay = false;
 
-        showAlert(`WELCOME to Pacman Game👋! \n\n\nHow To Play?\n\nPress 🔼▶🔽◀ to controll the Pacman. \nPress Space button to play/pause. \n\n\nGood Luck 😏`);
+        showAlert(`WELCOME to Pacman Game👋 \n------------------------- \n\nHow To Play?\n\nPress 🔼▶🔽◀ to controll the Pacman. \nPress Space button to play/pause. \n\n\nGood Luck 🫵😏`);
     }
 };
 
@@ -119,14 +119,15 @@ let restartPacmanAndGhosts = () => {
 };
 
 let gameOver = async () => {
+    playGameOverSound();
+    showAlert("Game over! 🤪🤣🫵😏");
+
     latestScore = score;
     score = 0;
     currentLives = LIVES_MAX;
 
     // Save history
     saveLatestScore(latestScore);
-
-    showAlert("Game over! 🤪🤣😏");
 
     rePositionFoodLocations();
     createNewPacman();
@@ -144,6 +145,7 @@ let winGame = () => {
         saveWinTimes(win);
     }
 
+    playWinSound();
     showAlert("You win! ✨🥳🎆🏆");
 
     rePositionFoodLocations();
@@ -158,6 +160,8 @@ let onGhostCollision = () => {
         gameOver();
         return;
     }
+
+    playEatGhostSound();
 
     restartPacmanAndGhosts();
 };

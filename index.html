@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pacman Game</title>
+
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body style="margin: 0; background-color: black;">
@@ -16,7 +18,20 @@
         <img alt="Animation" id="animation" src="img/animations.gif" width="140" height="20">
         <img alt="Ghosts" id="ghosts" src="img/ghost.png" width="140" height="20">
     </div>
+    <div style="display:none;"></div>
+        <audio id="backsound" src="sound/backsound.mp3"></audio>
+        <audio id="eatghostsound" src="sound/eatghost.wav"></audio>
+        <audio id="winsound" src="sound/winning.wav"></audio>
+        <audio id="losesound" src="sound/lose.wav"></audio>
+    </div>
+    <div class="option-container">
+        <div class="">
+            <p>Sound </p>
+            <button class="sound-btn">🔊</button>
+        </div>
+    </div>
 
+    <script src="js/sound.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/dialog.js"></script>
     <script src="js/ghost.js"></script>
