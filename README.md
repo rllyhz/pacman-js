@@ -5,7 +5,7 @@ Web-based Packman Game Using Javascript
 ## Preview
 
 <p align="center">
-    <img src=""
+    <img src="art/preview.png"
         alt="Preview Screenshots"
         width="200"
     />
