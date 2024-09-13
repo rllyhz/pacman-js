@@ -31,6 +31,8 @@ let pacman;
 let oneBlockSize = 20;
 let score = 0;
 let latestScore = 0;
+let win = 0;
+let bestWinTimes = 0;
 let ghosts = [];
 let wallSpaceWidth = oneBlockSize / 1.6;
 let wallOffset = (oneBlockSize - wallSpaceWidth) / 2;
@@ -67,6 +69,32 @@ let map = [
     [1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1],
     [1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1],
     [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+];
+
+map = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+    [1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1],
+    [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 ];
 
@@ -131,6 +159,22 @@ let gameOver = async () => {
     gamePaused = true;
 };
 
+let winGame = () => {
+    gamePaused = true;
+
+    win++;
+    if (win > bestWinTimes) {
+        bestWinTimes = win;
+        saveWinTimes(win);
+    }
+
+    showAlert("You win! ✨🥳🎆🏆");
+
+    rePositionFoodLocations();
+    createNewPacman();
+    createGhosts();
+};
+
 let onGhostCollision = () => {
     currentLives--;
 
@@ -145,7 +189,14 @@ let onGhostCollision = () => {
 let update = () => {
     pacman.moveProcess();
     pacman.eat();
+
+    if (ateAllFoods()) {
+        winGame();
+        return;
+    }
+
     updateGhosts();
+
     if (pacman.checkGhostCollision(ghosts)) {
         onGhostCollision();
     }
@@ -184,10 +235,25 @@ let rePositionFoodLocations = () => {
     }
 };
 
+let ateAllFoods = () => {
+    let alreadyAteAll = true;
+
+    for (let i = 0; i < map.length; i++) {
+        for (let j = 0; j < map[0].length; j++) {
+            if (map[i][j] == 2) {
+                // food still exists
+                alreadyAteAll = false;
+            }
+        }
+    }
+
+    return alreadyAteAll;
+};
+
 let drawRemainingLives = () => {
     canvasContext.font = "20px Emulogic";
     canvasContext.fillStyle = "white";
-    canvasContext.fillText("Lives: ", 220, oneBlockSize * (map.length + 1));
+    canvasContext.fillText("Lives: ", 220, oneBlockSize * (map.length + 1.5));
 
     for (let i = 0; i < currentLives; i++) {
         canvasContext.drawImage(
@@ -196,8 +262,8 @@ let drawRemainingLives = () => {
             0,
             oneBlockSize,
             oneBlockSize,
-            350 + i * oneBlockSize,
-            oneBlockSize * map.length + 2,
+            360 + + i * oneBlockSize,
+            oneBlockSize * map.length + 14,
             oneBlockSize,
             oneBlockSize
         );
@@ -210,7 +276,7 @@ let drawScore = () => {
     canvasContext.fillText(
         "Score: " + score,
         0,
-        oneBlockSize * (map.length + 1)
+        oneBlockSize * (map.length + 1.5)
     );
 };
 
@@ -221,8 +287,15 @@ let drawLatestScore = () => {
     canvasContext.fillText(
         "Latest Score: " + latestScore,
         0,
-        oneBlockSize * (map.length + 2)
+        oneBlockSize * (map.length + 3)
     );
+};
+
+let drawBestWinTimes = () => {
+    canvasContext.font = "20px Emulogic";
+    canvasContext.fillStyle = "white";
+    canvasContext.fillStyle = "white";
+    canvasContext.fillText("Win: " + bestWinTimes + " time(s)", 220, oneBlockSize * (map.length + 3));
 };
 
 let draw = () => {
@@ -235,6 +308,7 @@ let draw = () => {
     drawScore();
     drawLatestScore();
     drawRemainingLives();
+    drawBestWinTimes();
 };
 
 let drawWalls = () => {
@@ -314,6 +388,11 @@ let createGhosts = () => {
 // Get latest score
 getLatestScore().then(_score => {
     latestScore = _score;
+});
+
+// Get last win times
+getLastWinTimes().then(_winTimes => {
+    bestWinTimes = _winTimes;
 });
 
 createNewPacman();
