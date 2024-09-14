@@ -13,7 +13,10 @@ const DIRECTION_UP = 3;
 const DIRECTION_LEFT = 2;
 const DIRECTION_BOTTOM = 1;
 
+// Buttons
 const PAUSE_KEY = 32;
+const MUTE_KEY = 77;
+
 const LIVES_MAX = 3;
 
 let currentLives = LIVES_MAX;
@@ -405,6 +408,8 @@ window.addEventListener("keydown", (event) => {
             pacman.nextDirection = DIRECTION_BOTTOM;
         } else if (k == PAUSE_KEY && !isDialogShowing()) {
             gamePaused = !gamePaused;
+        } else if (k == MUTE_KEY && !isDialogShowing()) {
+            toggleBacksoundAudio();
         }
     }, 1);
 });
