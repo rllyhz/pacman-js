@@ -1,4 +1,4 @@
-# Packman JS
+# Pacman JS
 
 ![build](https://img.shields.io/badge/main-success-green) ![rllyhz](https://img.shields.io/badge/rllyhz-blue)
 
