@@ -1,3 +1,4 @@
+let shouldShowAlertMode = true;
 
 const ACTIVE_DIALOG_ID = "dialog";
 let _isDialogActive = false;
@@ -59,6 +60,8 @@ function isDialogShowing() {
 }
 
 async function showAlert(message) {
+    if (!shouldShowAlertMode) return;
+
     const promise = new Promise((_, __) => {
         alert(message);
         _();
