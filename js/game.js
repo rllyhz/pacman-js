@@ -13,11 +13,14 @@ const DIRECTION_UP = 3;
 const DIRECTION_LEFT = 2;
 const DIRECTION_BOTTOM = 1;
 
+// Buttons
 const PAUSE_KEY = 32;
+const MUTE_KEY = 77;
+
 const LIVES_MAX = 3;
 
 let currentLives = LIVES_MAX;
-let ghostCount = 4;
+let ghostCount = numberOfGhostsSpawned[ACTIVE_MAP_INDEX];
 let ghostImageLocations = [
     { x: 0, y: 0 },
     { x: 176, y: 0 },
@@ -48,35 +51,20 @@ let ghostRadiusStrokeColor = "rgba(255, 255, 255, 0.28)";
 let wallColor = "#697565";
 let foodColor = "#ECDFCC";
 
-// we now create the map of the walls,
-// if 1 wall, if 0 not wall
-// 21 columns // 23 rows
-let map = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
-    [1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1],
-    [1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1],
-    [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
-    [1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1],
-    [1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1],
-    [1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1],
-    [0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1],
-    [2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2],
-    [1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1],
-    [0, 0, 0, 0, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 1, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1],
-    [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
-    [1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1],
-    [1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1],
-    [1, 1, 2, 2, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 2, 1, 1],
-    [1, 2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1],
-    [1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1],
-    [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-];
+// Set active map
+let activeMap = maps[ACTIVE_MAP_INDEX];
+let map = activeMap;
 
+// Get Pacman spawn coordinates
+let pacmanCoordinates = pacmanSpawnCoordinates[ACTIVE_MAP_INDEX];
+pacmanCoordinates = {
+    x: pacmanCoordinates.x * oneBlockSize,
+    y: pacmanCoordinates.y * oneBlockSize,
+}
+// Get Monsters spawn coordinates
+let ghostsCoordinates = ghostsSpawnCoordinates[ACTIVE_MAP_INDEX];
+
+// Get randomized ghosts' targets
 let randomTargetsForGhosts = [
     { x: 1 * oneBlockSize, y: 1 * oneBlockSize },
     { x: 1 * oneBlockSize, y: (map.length - 2) * oneBlockSize },
@@ -87,10 +75,10 @@ let randomTargetsForGhosts = [
     },
 ];
 
-let createNewPacman = () => {
+let createNewPacman = (x = oneBlockSize, y = oneBlockSize) => {
     pacman = new Pacman(
-        oneBlockSize,
-        oneBlockSize,
+        x,
+        y,
         oneBlockSize,
         oneBlockSize,
         oneBlockSize / 5
@@ -117,8 +105,8 @@ let gameLoop = () => {
 let gameInterval = setInterval(gameLoop, 1000 / fps);
 
 let restartPacmanAndGhosts = () => {
-    createNewPacman();
-    createGhosts();
+    createNewPacman(pacmanCoordinates.x, pacmanCoordinates.y);
+    createGhosts(ghostsCoordinates);
 
     gamePaused = true;
 };
@@ -135,8 +123,8 @@ let gameOver = async () => {
     saveLatestScore(latestScore);
 
     rePositionFoodLocations();
-    createNewPacman();
-    createGhosts();
+    createNewPacman(pacmanCoordinates.x, pacmanCoordinates.y);
+    createGhosts(ghostsCoordinates);
 
     gamePaused = true;
 };
@@ -154,7 +142,7 @@ let winGame = () => {
     showAlert("You win! ✨🥳🎆🏆");
 
     rePositionFoodLocations();
-    createNewPacman();
+    createNewPacman(pacmanCoordinates.x, pacmanCoordinates.y);
     createGhosts();
 };
 
@@ -236,9 +224,9 @@ let ateAllFoods = () => {
 };
 
 let drawRemainingLives = () => {
-    canvasContext.font = "20px Emulogic";
+    canvasContext.font = "20px Arial";
     canvasContext.fillStyle = "white";
-    canvasContext.fillText("Lives: ", 220, oneBlockSize * (map.length + 1.5));
+    canvasContext.fillText("Lives: ", 300, oneBlockSize * (map.length + 1.5));
 
     for (let i = 0; i < currentLives; i++) {
         canvasContext.drawImage(
@@ -256,7 +244,7 @@ let drawRemainingLives = () => {
 };
 
 let drawScore = () => {
-    canvasContext.font = "20px Emulogic";
+    canvasContext.font = "20px Arial";
     canvasContext.fillStyle = "white";
     canvasContext.fillText(
         "Score: " + score,
@@ -266,7 +254,7 @@ let drawScore = () => {
 };
 
 let drawLatestScore = () => {
-    canvasContext.font = "20px Emulogic";
+    canvasContext.font = "20px Arial";
     canvasContext.fillStyle = "white";
     canvasContext.fillStyle = "white";
     canvasContext.fillText(
@@ -277,10 +265,10 @@ let drawLatestScore = () => {
 };
 
 let drawBestWinTimes = () => {
-    canvasContext.font = "20px Emulogic";
+    canvasContext.font = "20px Arial";
     canvasContext.fillStyle = "white";
     canvasContext.fillStyle = "white";
-    canvasContext.fillText("Win: " + bestWinTimes + " time(s)", 220, oneBlockSize * (map.length + 3));
+    canvasContext.fillText("Win: " + bestWinTimes + " time(s)", 300, oneBlockSize * (map.length + 3));
 };
 
 let draw = () => {
@@ -351,12 +339,20 @@ let drawWalls = () => {
     }
 };
 
-let createGhosts = () => {
+let createGhosts = (coordinates = null) => {
     ghosts = [];
-    for (let i = 0; i < ghostCount * 2; i++) {
+    for (let i = 0; i < ghostCount; i++) {
+        let x = 1 * oneBlockSize,
+            y = 1 * oneBlockSize;
+
+        if (coordinates) {
+            x = coordinates[i].x * oneBlockSize;
+            y = coordinates[i].y * oneBlockSize;
+        }
+
         let newGhost = new Ghost(
-            9 * oneBlockSize + (i % 2 == 0 ? 0 : 1) * oneBlockSize,
-            10 * oneBlockSize + (i % 2 == 0 ? 0 : 1) * oneBlockSize,
+            x,
+            y,
             oneBlockSize,
             oneBlockSize,
             pacman.speed / 2,
@@ -366,6 +362,7 @@ let createGhosts = () => {
             116,
             6 + i
         );
+
         ghosts.push(newGhost);
     }
 };
@@ -380,9 +377,9 @@ getLastWinTimes().then(_winTimes => {
     bestWinTimes = _winTimes;
 });
 
-createNewPacman();
-createGhosts();
-gameLoop();
+createNewPacman(pacmanCoordinates.x, pacmanCoordinates.y);
+createGhosts(ghostsCoordinates);
+// gameLoop();
 
 window.addEventListener("keydown", (event) => {
     let k = event.keyCode;
@@ -405,6 +402,8 @@ window.addEventListener("keydown", (event) => {
             pacman.nextDirection = DIRECTION_BOTTOM;
         } else if (k == PAUSE_KEY && !isDialogShowing()) {
             gamePaused = !gamePaused;
+        } else if (k == MUTE_KEY && !isDialogShowing()) {
+            toggleBacksoundAudio();
         }
     }, 1);
 });
